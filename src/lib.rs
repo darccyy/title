@@ -2,7 +2,7 @@ mod args;
 
 pub use args::{Args, Style};
 
-pub fn print_title(text: &str, style: Style, width: usize) {
+pub fn print_title(text: &str, width: usize, style: Style) {
     let chars = match style {
         Style::Unicode => Chars::from(' ', '─', '│', '┌', '┐', '└', '┘'),
         Style::Ascii => Chars::from(' ', '-', ' ', '-', '-', '-', '-'),

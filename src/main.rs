@@ -13,5 +13,5 @@ fn main() {
 
     let text = args.text.join(" ");
 
-    print_title(&text, args.style, width);
+    print_title(&text, width, args.style);
 }
