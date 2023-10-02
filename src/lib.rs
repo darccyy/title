@@ -1,7 +1,7 @@
-mod args;
+use clap::Parser;
+use strum::EnumString;
 
-pub use args::{Args, Style};
-
+/// Print fancy title to stdout
 pub fn print_title(text: &str, width: usize, style: Style) {
     let chars = match style {
         Style::Unicode => Chars::from(' ', '─', '│', '┌', '┐', '└', '┘'),
@@ -32,6 +32,38 @@ pub fn print_title(text: &str, width: usize, style: Style) {
     println!();
 }
 
+/// Title
+///
+/// Display a fancy title in the terminal
+#[derive(Parser)]
+pub struct Args {
+    /// Character style to use
+    #[arg(short, long, default_value = "unicode")]
+    pub style: Style,
+
+    /// Override terminal width
+    #[arg(short, long)]
+    pub width: Option<usize>,
+
+    /// Text to display
+    pub text: Vec<String>,
+}
+
+/// Character style to use
+#[derive(Debug, EnumString, Clone, Copy)]
+pub enum Style {
+    /// UTF-8 box drawing characters
+    #[strum(serialize = "u", serialize = "unicode", serialize = "utf8")]
+    Unicode,
+    /// Simple ASCII characters
+    #[strum(serialize = "a", serialize = "ascii")]
+    Ascii,
+    /// Do not draw a border
+    #[strum(serialize = "b", serialize = "borderless")]
+    Borderless,
+}
+
+/// Chars used in box drawing around title
 struct Chars {
     pub space: char,
     pub horizontal: char,
@@ -43,6 +75,7 @@ struct Chars {
 }
 
 impl Chars {
+    /// Wrapper for creating `Chars`
     pub fn from(
         space: char,
         horizontal: char,
