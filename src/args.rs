@@ -1,7 +1,7 @@
 use clap::Parser;
 use strum::EnumString;
 
-/// title
+/// Title
 ///
 /// Display a fancy title in the terminal
 #[derive(Parser)]
