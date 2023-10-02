@@ -10,7 +10,7 @@ pub fn print_title(text: &str, style: Style, width: usize) {
     };
 
     let width_inner = width.checked_sub(2).unwrap_or(0);
-    let padding_total = width_inner - text.len();
+    let padding_total = width_inner.checked_sub(text.len()).unwrap_or(0);
     let padding_left = padding_total / 2;
     let padding_right = padding_total - padding_left;
 
