@@ -3,16 +3,24 @@ use strum::EnumString;
 
 /// Print fancy title to stdout
 pub fn print_title(text: &str, width: usize, style: Style) {
-    let chars = match style {
-        Style::Unicode => Chars::from(' ', '─', '│', '┌', '┐', '└', '┘'),
-        Style::Ascii => Chars::from(' ', '-', ' ', '-', '-', '-', '-'),
-        Style::Borderless => Chars::from(' ', ' ', ' ', ' ', ' ', ' ', ' '),
-    };
-
     let width_inner = width.checked_sub(2).unwrap_or(0);
     let padding_total = width_inner.checked_sub(text.chars().count()).unwrap_or(0);
     let padding_left = padding_total / 2;
     let padding_right = padding_total - padding_left;
+
+    let chars = match style {
+        Style::Unicode => Chars::from(' ', '─', '│', '┌', '┐', '└', '┘'),
+        Style::Ascii => Chars::from(' ', '-', ' ', '-', '-', '-', '-'),
+        Style::Padding => Chars::from(' ', ' ', ' ', ' ', ' ', ' ', ' '),
+
+        Style::None => {
+            print!("{}", " ".repeat(padding_left + 1));
+            print!("{}", text);
+            print!("{}", " ".repeat(padding_right + 1));
+            println!();
+            return;
+        }
+    };
 
     print!("{}", chars.top_left);
     print!("{}", chars.horizontal.to_string().repeat(width_inner));
@@ -36,6 +44,7 @@ pub fn print_title(text: &str, width: usize, style: Style) {
 ///
 /// Display a fancy title in the terminal
 #[derive(Parser)]
+#[clap(about)]
 pub struct Args {
     /// Character style to use
     #[arg(short, long, default_value = "unicode")]
@@ -58,9 +67,12 @@ pub enum Style {
     /// Simple ASCII characters
     #[strum(serialize = "a", serialize = "ascii")]
     Ascii,
-    /// Do not draw a border
-    #[strum(serialize = "b", serialize = "borderless")]
-    Borderless,
+    /// No border, but padding
+    #[strum(serialize = "p", serialize = "padding")]
+    Padding,
+    /// No border
+    #[strum(serialize = "n", serialize = "none")]
+    None,
 }
 
 /// Chars used in box drawing around title
